@@ -1,0 +1,9 @@
+{
+  "name": "DG Timing — Disc Golf Footwork Trainer",
+  "short_name": "DG Timing",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#071b13",
+  "theme_color": "#430b10",
+  "icons": [{ "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b2b1e" />
+    <meta name="description" content="Practice disc golf backhand footwork timing." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/icon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>DG Timing</title>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header>
+        <p class="eyebrow">DISC GOLF FOOTWORK</p>
+        <h1>DG Timing</h1>
+        <p class="subtitle">Train the rhythm of a pro backhand run-up.</p>
+      </header>
+
+      <section aria-labelledby="profile-heading">
+        <h2 id="profile-heading">Choose a timing profile</h2>
+        <div class="profiles" id="profiles"></div>
+        <details class="add-player">
+          <summary>Add your own player timing</summary>
+          <form id="player-form">
+            <label>Player name
+              <input id="player-name" required maxlength="40" placeholder="e.g. Calvin Heimburg" />
+            </label>
+            <p class="form-help">Enter the seconds between each step.</p>
+            <div class="timing-inputs">
+              <label>R → L<input id="timing-1" required type="number" min="0.05" max="3" step="0.001" placeholder="0.500" /></label>
+              <label>L → R<input id="timing-2" required type="number" min="0.05" max="3" step="0.001" placeholder="0.610" /></label>
+              <label>R → X<input id="timing-3" required type="number" min="0.05" max="3" step="0.001" placeholder="0.324" /></label>
+              <label>X → P<input id="timing-4" required type="number" min="0.05" max="3" step="0.001" placeholder="0.514" /></label>
+            </div>
+            <button class="add-button" type="submit">Add player</button>
+          </form>
+        </details>
+      </section>
+
+      <section class="settings" aria-labelledby="settings-heading">
+        <h2 id="settings-heading">Workout settings</h2>
+        <label>Repetitions <output id="reps-output">5</output>
+          <input id="reps" type="range" min="1" max="20" value="5" />
+        </label>
+        <label>Rest between reps <output id="rest-output">5 sec</output>
+          <input id="rest" type="range" min="1" max="30" value="5" />
+        </label>
+      </section>
+
+      <section class="rhythm" aria-live="polite">
+        <p id="status">Choose a profile, then tap Start.</p>
+        <div class="steps" aria-label="Footwork sequence">
+          <span>R</span><i></i><span>L</span><i></i><span>R</span><i></i><span>X</span><i></i><span>P</span>
+        </div>
+        <p class="legend">Right · Left · Right · X-step · Plant</p>
+      </section>
+
+      <div class="actions">
+        <button class="primary" id="start-button">Start workout</button>
+        <button class="secondary" id="test-button">Test rhythm</button>
+        <button class="stop" id="stop-button" disabled>Stop</button>
+      </div>
+
+      <p class="hint">Keep your volume on. The app announces each rep, then cues your five steps.</p>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
