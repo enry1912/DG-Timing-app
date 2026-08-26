@@ -1,6 +1,6 @@
-import { requireSession } from '../../_lib/auth.js';
-import { error, json, readJson } from '../../_lib/http.js';
-import { saveProfile, validateProfile } from '../../_lib/profiles.js';
+import { requireSession } from '../_lib/auth.js';
+import { error, json, readJson } from '../_lib/http.js';
+import { saveProfile, validateProfile } from '../_lib/profiles.js';
 
 export async function onRequestPut({ request, env, params }) {
   const session = await requireSession(request, env); if (session.response) return session.response;
