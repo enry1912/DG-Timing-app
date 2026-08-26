@@ -19,7 +19,7 @@ const routes = {
   'POST /api/auth/password-reset': passwordReset,
   'POST /api/auth/delete-account': deleteAccount,
   'GET /api/auth/google': google,
-  'GET /api/auth/google-callback': googleCallback,
+  'GET /api/auth/google-callback': ({ request, env }) => googleCallback(request, env),
   'GET /api/profiles': getProfiles,
   'POST /api/profiles': createProfile
 };
