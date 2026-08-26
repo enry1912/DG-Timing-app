@@ -1,0 +1,13 @@
+.git/
+.wrangler/
+.dev.vars
+.env
+.env.*
+node_modules/
+functions/
+migrations/
+worker.js
+wrangler.toml
+DEPLOYMENT.md
+SPEC.md
+Disc_golf_timings_console (1).js

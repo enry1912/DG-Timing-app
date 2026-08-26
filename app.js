@@ -1,5 +1,7 @@
 import { buildProfileCsv } from './js/csv.js';
+import { api } from './js/apiClient.js';
 import { ensureAudioReady, getAudioContext, playProfileSounds, playTone } from './js/audioEngine.js';
+import { createAuthUi } from './js/authUi.js';
 import { createProfileKey, getMarkers, getStepRanges, getWorkoutMarkers, isValidProfile, loadProfiles, saveCustomProfiles, stepNames } from './js/profileStore.js';
 
 const { profiles: PROFILES, customProfiles } = loadProfiles();
@@ -10,6 +12,7 @@ const END_OFFSET = 1.0;
 let selectedProfile = null;
 let isCancelled = false;
 let pendingSleeps = [];
+let currentUser = null;
 
 const profilesEl = document.querySelector('#profiles');
 const statusEl = document.querySelector('#status');
@@ -49,6 +52,41 @@ const playerVideos = new Map();
 playerVideos.set('anthonyBarela', PROFILES.anthonyBarela.videoUrl);
 let footfalls = Array(5).fill(null);
 let stepRanges = [];
+
+async function loadCloudProfiles() {
+  if (!currentUser) return;
+  const { profiles } = await api.profiles();
+  Object.keys(PROFILES).filter(key => key !== 'anthonyBarela').forEach(key => delete PROFILES[key]);
+  profiles.forEach(profile => { PROFILES[profile.id] = profile; });
+  if (selectedProfile && !PROFILES[selectedProfile]) selectedProfile = null;
+  renderProfiles();
+}
+
+async function offerLocalProfileImport() {
+  if (!currentUser) return;
+  const importKey = `dg-timing-imported-${currentUser.id}`;
+  const localProfiles = Object.entries(customProfiles).map(([, profile]) => ({
+    name: profile.name, shotType: profile.shotType || '', tournamentLink: profile.tournamentLink || '', description: profile.description || '', steps: getStepRanges(profile)
+  }));
+  if (!localProfiles.length || localStorage.getItem(importKey)) return;
+  const shouldImport = confirm(`Import ${localProfiles.length} player profile${localProfiles.length === 1 ? '' : 's'} saved in this browser into your private account?`);
+  if (shouldImport) await Promise.all(localProfiles.map(profile => api.createProfile(profile)));
+  localStorage.setItem(importKey, 'true');
+}
+
+async function saveProfileToCloud(key, profile) {
+  if (!currentUser) return key;
+  const payload = { name: profile.name, shotType: profile.shotType, tournamentLink: profile.tournamentLink, description: profile.description, steps: profile.steps };
+  if (key.startsWith('custom-')) {
+    const saved = await api.createProfile(payload);
+    delete PROFILES[key]; delete customProfiles[key]; PROFILES[saved.id] = saved;
+    if (selectedProfile === key) selectedProfile = saved.id;
+    return saved.id;
+  }
+  const saved = await api.updateProfile(key, payload);
+  PROFILES[key] = saved;
+  return key;
+}
 function debug(message, error) {
   const line = `${new Date().toLocaleTimeString()}  ${message}${error ? ` — ${error.message || error}` : ''}`;
   console.log(line, error || '');
@@ -327,7 +365,7 @@ function stopWorkout() {
 
 repsInput.oninput = () => document.querySelector('#reps-output').value = repsInput.value;
 restInput.oninput = () => document.querySelector('#rest-output').value = `${restInput.value} sec`;
-playerForm.onsubmit = event => {
+playerForm.onsubmit = async event => {
   event.preventDefault();
   const name = document.querySelector('#player-name').value.trim();
   const timings = [...editableTimings];
@@ -343,7 +381,7 @@ playerForm.onsubmit = event => {
     statusEl.textContent = 'Could not save this player on this device.';
     return;
   }
-  selectedProfile = key;
+  try { selectedProfile = await saveProfileToCloud(key, PROFILES[key]); } catch (caught) { statusEl.textContent = `Saved locally, but cloud sync failed: ${caught.message}`; }
   editingProfileKey = null;
   playerFormTitle.textContent = 'Add your own player timing';
   playerForm.reset();
@@ -363,9 +401,10 @@ function renderStepTable() {
   body.replaceChildren(header, makeRow('Start', false), makeRow('End', true));
 }
 function openProfileEditor(key) {
-  editorProfileKey = key;
+  const isBundledReference = key === 'anthonyBarela';
+  editorProfileKey = isBundledReference ? null : key;
   const profile = key ? PROFILES[key] : null;
-  editorTitle.textContent = key ? `Edit ${profile.name}` : 'Add player';
+  editorTitle.textContent = isBundledReference ? `Copy ${profile.name}` : key ? `Edit ${profile.name}` : 'Add player';
   editorPlayerName.value = profile?.name || '';
   editorVideo.removeAttribute('src');
   const profileVideo = key && (PROFILES[key]?.videoUrl || playerVideos.get(key));
@@ -409,7 +448,7 @@ document.querySelectorAll('.footfall-buttons button').forEach(button => button.o
   footfalls[Number(button.dataset.step)] = editorVideo.currentTime;
   updateRecordedSteps();
 });
-document.querySelector('#save-editor').onclick = () => {
+document.querySelector('#save-editor').onclick = async () => {
   if (footfalls.slice(2).some(time => time === null) || footfalls.some((time, index) => time !== null && footfalls.slice(0, index).some(previous => previous !== null && time <= previous))) { recordedSteps.textContent = 'Second R, X and Plant are required and must be chronological.'; return; }
   const name = editorPlayerName.value.trim();
   if (!name) { recordedSteps.textContent = 'Enter a player name.'; return; }
@@ -427,6 +466,7 @@ document.querySelector('#save-editor').onclick = () => {
   if (editorVideo.src) { playerVideos.set(key, editorVideo.src); profile.videoUrl = editorVideo.src; }
   customProfiles[key] = profile;
   try { saveCustomProfiles(customProfiles); } catch { recordedSteps.textContent = 'Could not save timing on this device.'; return; }
+  try { await saveProfileToCloud(key, profile); } catch (caught) { recordedSteps.textContent = `Saved locally, but cloud sync failed: ${caught.message}`; return; }
   renderProfiles(); editor.close();
 };
 document.querySelector('#close-editor').onclick = () => editor.close();
@@ -466,5 +506,11 @@ window.addEventListener('keydown', event => { if (event.key === 'Escape' && !edi
 arrangeDashboard();
 renderProfiles();
 renderTimingEditor();
+
+const authUi = createAuthUi({
+  onSignedIn: async () => { currentUser = await authUi.refresh(); await offerLocalProfileImport(); await loadCloudProfiles(); },
+  onSignedOut: () => window.location.reload()
+});
+authUi.refresh().then(async user => { currentUser = user; await offerLocalProfileImport(); return loadCloudProfiles(); }).catch(error => debug('Cloud profile load skipped', error));
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');

@@ -1,0 +1,21 @@
+name = "dg-timing-app"
+compatibility_date = "2026-08-26"
+main = "worker.js"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "dg-timing"
+database_id = "6517a5ec-fa14-4789-8845-1873b72b579c"
+
+[vars]
+APP_ORIGIN = "https://dg-timing-app.enricomarsico95.workers.dev"
+SENDER_EMAIL = "Disc Golf Timing <no-reply@REPLACE_WITH_YOUR_DOMAIN>"
+
+[secrets]
+required = ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "RESEND_API_KEY"]
+
+[assets]
+directory = "."
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+not_found_handling = "404-page"

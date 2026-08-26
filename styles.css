@@ -64,3 +64,41 @@ button { border-radius: .65rem; min-height: 2.65rem; padding: .5rem .72rem; }
 .eyebrow, h2, .subtitle, .hint, .legend, .form-help, output { color: #bfe5c9; }.steps i { background: #69af7d; }.steps span { background: #e3f8dc; color: #17452d; }.profile-editor { background: #0b291a; }.profile-editor .actions { grid-template-columns: 1fr 1fr 1fr; }.optional-step { background: transparent !important; color: #a9ef81 !important; display: inline; font-size: .7rem !important; min-height: 0 !important; padding: 0 .15rem !important; width: auto !important; }.export-text { background: #061b10; border: 1px solid #5d9b74; border-radius: .55rem; color: #e6ffeb; font: .72rem ui-monospace, monospace; height: 7rem; margin-top: .6rem; padding: .5rem; resize: vertical; width: 100%; }
 .profile-row { grid-template-columns: minmax(0, 1fr) 2.65rem 5.15rem; }.profile-row .profile { min-height: 2.65rem; padding: .38rem .6rem; }.profile-copy strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.profile-edit { min-height: 2.65rem; }.board-toggle { min-height: 2.65rem; white-space: nowrap; }
 .profile-row { grid-template-columns: 1.8rem minmax(0, 1fr) 1.8rem; }.profile-row .profile { min-width: 0; padding: .5rem .7rem; }.profile-copy { padding-right: 0; }.profile-edit, .board-toggle { min-height: 2.15rem; width: 1.8rem; }
+
+/* Mobile-first safety: comfortable touch targets, no iOS input zoom, and scrollable dialogs. */
+@media (max-width: 47.99rem) {
+  body { background-attachment: scroll; }
+  .app-shell { padding: max(1.5rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); }
+  header { margin-bottom: 1.75rem; }
+  .comparison-dashboard, .settings { margin-top: 1.25rem; padding: 1rem; }
+  .comparison-dashboard { min-height: 12rem; }
+  .profile-editor, .workout-video, .player-required { margin: auto; max-height: calc(100dvh - 1rem); overflow-x: hidden; overflow-y: auto; width: calc(100vw - 1rem); }
+  .profile-editor { padding: 1rem; }
+  .profile-editor video { max-height: 42dvh; }
+  .workout-video video { max-height: 62dvh; }
+  .profile-editor .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+  .profile-editor .actions .primary:first-child { grid-column: 1 / -1; }
+  .shot-meta { grid-template-columns: 1fr; }
+  .shot-meta label:last-child { grid-column: auto; }
+  .frame-controls { gap: .4rem; }
+  .frame-controls button { flex: 1 1 7rem; }
+  .step-table { font-size: .68rem; }
+  .step-table th, .step-table td { padding: .2rem .06rem; }
+  .step-table button { min-height: 2.35rem; }
+}
+
+@media (max-width: 23rem) {
+  .profile-row { gap: .35rem; grid-template-columns: 2.25rem minmax(0, 1fr) 2.25rem; }
+  .profile-edit, .board-toggle { min-height: 2.5rem; width: 2.25rem; }
+  .steps span { height: 2.1rem; width: 2.1rem; }
+  .steps i { width: .45rem; }
+}
+
+@media (pointer: coarse) {
+  input, select, textarea { font-size: 16px; }
+  .board-toggle, .profile-edit { min-height: 2.5rem; }
+}
+
+.account-bar { display: flex; justify-content: flex-end; margin-top: .7rem; }
+.account-bar button { font-size: .78rem; min-height: 2.2rem; overflow: hidden; padding: .35rem .6rem; text-overflow: ellipsis; white-space: nowrap; }
+.auth-dialog { background: #0b291a; border: 1px solid #5d9b74; border-radius: 1rem; color: #f3fff5; max-width: 26rem; padding: 1.25rem; width: calc(100vw - 2rem); }.auth-dialog::backdrop { background: rgb(0 0 0 / .72); }.auth-dialog h2 { color: #f3fff5; font-size: 1.3rem; }.auth-dialog label { grid-template-columns: 1fr; }.auth-dialog input { background: #061b10; border: 1px solid #5d9b74; border-radius: .55rem; color: #f3fff5; font: inherit; min-height: 2.7rem; padding: .5rem .65rem; }.auth-dialog .primary { margin-top: 1rem; width: 100%; }.dialog-close { background: transparent; color: #bfe5c9; float: right; font-size: 1.5rem; min-height: 1.75rem; padding: 0; width: 1.75rem; }.google-sign-in { background: #e7f7e8; border-radius: .65rem; color: #153824; display: block; font-weight: 800; margin-top: .7rem; padding: .7rem; text-align: center; text-decoration: none; }.auth-links { display: flex; gap: 1rem; justify-content: space-between; margin-top: 1rem; }.auth-links .text-button { font-size: .76rem; }

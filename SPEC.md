@@ -27,8 +27,10 @@ Mobile-friendly trainer for reproducing disc-golf backhand run-up timing with sp
 
 ## Data and privacy
 
-- No server, account, analytics, or remote upload exists yet.
-- Future authentication/database work must define ownership, shared reference clips, retention/deletion, and an updated privacy notice.
+- Cloudflare D1 and Pages Functions provide account and private-profile storage when configured. Built-in reference profiles remain public and read-only.
+- Accounts support email/password (with an optional unique username) and Google sign-in. Passwords are server-hashed; browser sessions use secure HTTP-only cookies.
+- Verification and password-reset email require configured Google OAuth and Resend secrets. User-uploaded videos remain local to the browser session.
+- Users can delete private profiles and permanently delete their account and associated database records.
 
 ## Maintenance rule
 
@@ -37,3 +39,7 @@ Update this file whenever a user-visible feature, data-storage behavior, or timi
 ## Local development
 
 Run `node local-server.js` and open `http://localhost:8080`; do not use `file:///` for video/PWA testing.
+
+## Cloud deployment
+
+Create the D1 database, apply `migrations/0001_auth_and_profiles.sql`, replace the placeholder D1 ID and origin in `wrangler.toml`, then add `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `RESEND_API_KEY` as Cloudflare secrets. Google OAuth uses `/api/auth/google-callback` as its redirect URL.
