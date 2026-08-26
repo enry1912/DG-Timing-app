@@ -9,7 +9,7 @@ Do not enter secrets into source files or chat.
 5. This app deploys to the existing `dg-timing-app` Worker. Its Worker URL is configured as `APP_ORIGIN`.
 6. In Google Cloud, create a Web OAuth client. Its authorized redirect URI is `https://YOUR_DOMAIN/api/auth/google-callback`.
 7. Configure a verified Resend sender address/domain.
-8. Add production secrets interactively:
+8. After the first Worker deployment, add production secrets interactively:
    - `npx wrangler secret put GOOGLE_CLIENT_ID`
    - `npx wrangler secret put GOOGLE_CLIENT_SECRET`
    - `npx wrangler secret put RESEND_API_KEY`

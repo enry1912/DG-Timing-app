@@ -11,9 +11,6 @@ database_id = "6517a5ec-fa14-4789-8845-1873b72b579c"
 APP_ORIGIN = "https://dg-timing-app.enricomarsico95.workers.dev"
 SENDER_EMAIL = "Disc Golf Timing <no-reply@REPLACE_WITH_YOUR_DOMAIN>"
 
-[secrets]
-required = ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "RESEND_API_KEY"]
-
 [assets]
 directory = "."
 binding = "ASSETS"
