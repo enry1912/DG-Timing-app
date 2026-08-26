@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#430b10" />
+    <meta name="theme-color" content="#183d2b" />
     <meta name="description" content="Practice disc golf backhand footwork timing." />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
@@ -17,13 +17,18 @@
         <p class="eyebrow">DISC GOLF FOOTWORK</p>
         <h1>Disc Golf Timing</h1>
         <p class="subtitle">Train the rhythm of a pro backhand run-up.</p>
+        <pre id="debug-log" class="debug-log" hidden></pre>
+        <div class="actions workout-actions">
+          <button class="primary" id="start-button">Start workout</button>
+          <button class="stop" id="stop-button" disabled>Stop</button>
+        </div>
       </header>
 
       <section aria-labelledby="profile-heading">
         <h2 id="profile-heading">Choose a timing profile</h2>
+        <button class="add-profile" id="add-profile-button" type="button">＋ Add player</button>
         <div class="profiles" id="profiles"></div>
-        <button class="secondary edit-profile" id="edit-profile-button" type="button">Edit selected timing</button>
-        <details class="add-player">
+        <details class="add-player" hidden>
           <summary id="player-form-title">Add your own player timing</summary>
           <form id="player-form">
             <label>Player name
@@ -39,22 +44,19 @@
         </details>
       </section>
 
-      <section class="video-section" aria-labelledby="video-heading">
-        <h2 id="video-heading">Reference video (optional)</h2>
-        <label class="video-upload">Choose a video from this device
-          <input id="video-upload" type="file" accept="video/*" />
-        </label>
-        <p class="form-help">The clip stays in this browser session and restarts with the first step of every rep.</p>
-        <video id="reference-video" controls muted playsinline hidden></video>
+      <section class="comparison-dashboard" aria-labelledby="compare-heading">
+        <h2 id="compare-heading">Comparison dashboard</h2>
+        <p id="comparison-summary" class="form-help">Drag players from the list into this board to compare their timing.</p>
       </section>
+
 
       <section class="settings" aria-labelledby="settings-heading">
         <h2 id="settings-heading">Workout settings</h2>
         <label>Repetitions <output id="reps-output">5</output>
-          <input id="reps" type="range" min="1" max="20" value="5" />
+          <input id="reps" type="range" min="1" max="10" value="5" />
         </label>
         <label>Rest between reps <output id="rest-output">5 sec</output>
-          <input id="rest" type="range" min="1" max="30" value="5" />
+          <input id="rest" type="range" min="1" max="20" value="2" />
         </label>
       </section>
 
@@ -66,14 +68,23 @@
         <p class="legend">Right · Left · Right · X-step · Plant</p>
       </section>
 
-      <div class="actions">
-        <button class="primary" id="start-button">Start workout</button>
-        <button class="secondary" id="test-button">Test rhythm</button>
-        <button class="stop" id="stop-button" disabled>Stop</button>
-      </div>
-
-      <p class="hint">Keep your volume on. The app announces each rep, then cues your five steps.<br><a href="privacy.html">Privacy</a></p>
+      <p class="hint">Keep your volume on. The app announces each rep, then cues your five steps.<br><button id="refresh-app" class="text-button" type="button">Refresh app files</button> · <a href="privacy.html">Privacy</a></p>
     </main>
-    <script src="app.js"></script>
+    <dialog id="profile-editor" class="profile-editor">
+      <header><p class="eyebrow">PLAYER EDITOR</p><h2 id="editor-title">Edit timing</h2></header>
+      <label>Player name<input id="editor-player-name" maxlength="40" placeholder="e.g. Calvin Heimburg"></label>
+      <div class="shot-meta"><label>Shot type<select id="editor-shot-type"><option value="">Not set</option><option>Backhand</option><option>Forehand</option><option>Standstill</option></select></label><label>Tournament link<input id="editor-tournament-link" type="url" placeholder="https://…"></label><label>Description<input id="editor-description" maxlength="100" placeholder="e.g. 450 ft backhand drive"></label></div>
+      <label class="video-upload">Upload player video (local only)<input id="editor-video-upload" type="file" accept="video/*" /></label>
+      <p id="video-source-status" class="form-help">No video selected.</p>
+      <video id="editor-video" controls muted playsinline preload="metadata"></video>
+      <div class="frame-controls"><button type="button" id="frame-back">◀ Frame</button><output id="video-time">0.000s</output><button type="button" id="frame-forward">Frame ▶</button><label>FPS<select id="video-fps"><option>24</option><option selected>30</option><option>60</option></select></label></div>
+      <p class="form-help">Pause or step through the clip, then record when each step starts and ends.</p>
+      <table class="step-table"><tbody id="step-table-body"></tbody></table>
+      <p class="form-help" id="recorded-steps">No footfalls recorded.</p><textarea id="export-text" class="export-text" readonly hidden aria-label="Copyable CSV export"></textarea>
+      <div class="actions"><button class="secondary" id="test-editor" type="button">Test video + sound</button><button class="primary" id="save-editor" type="button">Save timings</button><button class="secondary" id="export-editor" type="button">Export TXT</button><button class="secondary" id="close-editor" type="button">Close</button></div>
+    </dialog>
+    <dialog id="workout-video" class="workout-video"><button id="close-workout-video" type="button">Close video</button><video id="workout-video-player" muted playsinline controls></video><div id="workout-step-bar" class="workout-step-bar" aria-label="Step timing progress"></div></dialog>
+    <dialog id="player-required" class="player-required"><p class="eyebrow">SELECT A PLAYER</p><h2>Choose a timing profile first</h2><p class="form-help">Click a player name, then start the workout.</p><button id="close-player-required" class="primary" type="button">Got it</button></dialog>
+    <script type="module" src="app.js"></script>
   </body>
 </html>
