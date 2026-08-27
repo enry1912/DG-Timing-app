@@ -513,7 +513,7 @@ const authUi = createAuthUi({
 });
 authUi.refresh().then(async user => {
   currentUser = user;
-  if (!user) { window.location.replace('/?next=/apps/timing/'); return; }
+  if (!user) return;
   await offerLocalProfileImport();
   return loadCloudProfiles();
 }).catch(error => debug('Cloud profile load skipped', error));

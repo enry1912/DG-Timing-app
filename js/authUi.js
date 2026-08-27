@@ -70,16 +70,32 @@ export function createAuthUi({ onSignedIn, onSignedOut }) {
     password.focus();
   }
 
-  return {
-    async refresh() {
+  async function refresh() {
       try {
         const { user } = await api.session();
         accountBar.querySelector('#delete-account-button')?.remove();
-        if (!user) { openButton.textContent = 'Sign in'; openButton.onclick = () => { setMode('login'); dialog.showModal(); identifier.focus(); }; return null; }
+        if (!user) {
+          openButton.className = 'btn btn-outline-light btn-sm account-action';
+          openButton.textContent = 'Sign in';
+          openButton.onclick = () => { setMode('login'); dialog.showModal(); identifier.focus(); };
+          return null;
+        }
+        openButton.className = 'btn btn-outline-light btn-sm account-action';
         openButton.textContent = `Sign out ${user.username || user.email}`;
-        openButton.onclick = async () => { await api.logout(); await onSignedOut(); await this.refresh(); };
+        openButton.onclick = async () => {
+          openButton.disabled = true;
+          try {
+            await api.logout();
+            await onSignedOut();
+          } catch (caught) {
+            setMessage(caught.message || 'Could not sign out. Please try again.');
+            dialog.showModal();
+          } finally {
+            openButton.disabled = false;
+          }
+        };
         const deleteButton = document.createElement('button');
-        deleteButton.id = 'delete-account-button'; deleteButton.className = 'text-button'; deleteButton.type = 'button'; deleteButton.textContent = 'Delete account';
+        deleteButton.id = 'delete-account-button'; deleteButton.className = 'btn btn-outline-danger btn-sm account-action'; deleteButton.type = 'button'; deleteButton.textContent = 'Delete account';
         deleteButton.onclick = async () => {
           if (!confirm('This permanently deletes your private profiles and account. Continue?')) return;
           const confirmation = prompt('Type DELETE to confirm.');
@@ -89,7 +105,12 @@ export function createAuthUi({ onSignedIn, onSignedOut }) {
         };
         accountBar.append(deleteButton);
         return user;
-      } catch { openButton.textContent = 'Sign in'; return null; }
-    }
-  };
+      } catch {
+        openButton.className = 'btn btn-outline-light btn-sm account-action';
+        openButton.textContent = 'Sign in';
+        return null;
+      }
+  }
+
+  return { refresh };
 }
