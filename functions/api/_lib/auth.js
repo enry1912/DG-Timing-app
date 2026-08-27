@@ -2,6 +2,7 @@ import { error } from './http.js';
 
 const sessionCookie = '__Host-dg_session';
 const encoder = new TextEncoder();
+const passwordIterations = 100000; // Cloudflare Workers Web Crypto maximum for PBKDF2.
 
 export const sessionCookieOptions = 'Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000';
 export const clearSessionCookie = `${sessionCookie}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
@@ -22,8 +23,8 @@ function fromBase64(value) { return Uint8Array.from(atob(value), char => char.ch
 export async function hashPassword(password) {
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const key = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']);
-  const derived = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: 600000 }, key, 256);
-  return `pbkdf2-sha256$600000$${toBase64(salt)}$${toBase64(new Uint8Array(derived))}`;
+  const derived = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: passwordIterations }, key, 256);
+  return `pbkdf2-sha256$${passwordIterations}$${toBase64(salt)}$${toBase64(new Uint8Array(derived))}`;
 }
 
 export async function verifyPassword(password, storedValue) {
