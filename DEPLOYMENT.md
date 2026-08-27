@@ -6,7 +6,7 @@ Do not enter secrets into source files or chat.
 2. Create the database: `npx wrangler d1 create dg-timing`.
 3. Copy the returned database ID into `wrangler.toml`.
 4. Apply the schema: `npx wrangler d1 execute dg-timing --remote --file migrations/0001_auth_and_profiles.sql`.
-5. This app deploys to the existing `dg-timing-app` Worker. Its Worker URL is configured as `APP_ORIGIN`.
+5. This app deploys to the existing `dg-timing-app` Worker. Configure `APP_ORIGIN` as its public custom domain (`https://discgolftiming.com`).
 6. In Google Cloud, create a Web OAuth client. Its authorized redirect URI is `https://YOUR_DOMAIN/api/auth/google-callback`.
 7. Configure a verified Resend sender address/domain.
 8. After the first Worker deployment, add production secrets interactively:
