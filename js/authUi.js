@@ -17,18 +17,23 @@ export function createAuthUi({ onSignedIn, onSignedOut }) {
   const modeButton = document.querySelector('#toggle-auth-mode');
   const accountBar = document.querySelector('#account-bar');
   let mode = 'login';
+  const resetToken = new URLSearchParams(window.location.search).get('reset');
 
   function setMessage(text = '') { message.textContent = text; }
   function setMode(nextMode) {
     mode = nextMode;
     const registering = mode === 'register';
-    title.textContent = registering ? 'Create account' : 'Sign in';
-    identifier.closest('label').hidden = registering;
-    identifier.required = !registering;
+    const resetting = mode === 'reset';
+    title.textContent = registering ? 'Create account' : resetting ? 'Set a new password' : 'Sign in';
+    identifier.closest('label').hidden = registering || resetting;
+    identifier.required = !registering && !resetting;
     emailRow.hidden = !registering; email.required = registering;
     usernameRow.hidden = !registering;
-    password.autocomplete = registering ? 'new-password' : 'current-password';
-    submit.textContent = registering ? 'Create account' : 'Sign in';
+    password.autocomplete = registering || resetting ? 'new-password' : 'current-password';
+    submit.textContent = registering ? 'Create account' : resetting ? 'Save new password' : 'Sign in';
+    modeButton.hidden = resetting;
+    document.querySelector('#forgot-password').hidden = resetting;
+    document.querySelector('#google-sign-in').hidden = resetting;
     modeButton.textContent = registering ? 'I already have an account' : 'Create an account';
     setMessage();
   }
@@ -48,12 +53,22 @@ export function createAuthUi({ onSignedIn, onSignedOut }) {
       if (mode === 'register') {
         await api.register({ email: email.value, username: username.value, password: password.value });
         setMessage('Check your email to verify your account.'); form.reset();
+      } else if (mode === 'reset') {
+        await api.resetPassword(resetToken, password.value);
+        history.replaceState({}, '', window.location.pathname);
+        setMode('login'); form.reset(); setMessage('Password reset. You can now sign in.');
       } else {
         await api.login({ identifier: identifier.value, password: password.value });
         dialog.close(); await onSignedIn();
       }
     } catch (caught) { setMessage(caught.message); } finally { submit.disabled = false; }
   };
+
+  if (resetToken) {
+    setMode('reset');
+    dialog.showModal();
+    password.focus();
+  }
 
   return {
     async refresh() {
