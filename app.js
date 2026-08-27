@@ -511,6 +511,11 @@ const authUi = createAuthUi({
   onSignedIn: async () => { currentUser = await authUi.refresh(); await offerLocalProfileImport(); await loadCloudProfiles(); },
   onSignedOut: () => window.location.reload()
 });
-authUi.refresh().then(async user => { currentUser = user; await offerLocalProfileImport(); return loadCloudProfiles(); }).catch(error => debug('Cloud profile load skipped', error));
+authUi.refresh().then(async user => {
+  currentUser = user;
+  if (!user) { window.location.replace('/?next=/apps/timing/'); return; }
+  await offerLocalProfileImport();
+  return loadCloudProfiles();
+}).catch(error => debug('Cloud profile load skipped', error));
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');

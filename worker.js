@@ -27,6 +27,12 @@ const routes = {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.pathname === '/' || url.pathname === '/portal.html') {
+      return env.ASSETS.fetch(new Request(new URL('/portal.html', request.url), request));
+    }
+    if (url.pathname === '/apps/timing' || url.pathname === '/apps/timing/') {
+      return env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
+    }
     const route = routes[`${request.method} ${url.pathname}`];
     if (route) return route({ request, env, params: {} });
     const profileMatch = url.pathname.match(/^\/api\/profiles\/([\w-]+)$/);

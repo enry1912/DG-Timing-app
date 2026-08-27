@@ -1,4 +1,5 @@
 :root { color-scheme: dark; font-family: "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif; background: #071d13; color: #fff5f4; }
+.timing-nav { align-items: center; background: #0b291a; border-bottom: 1px solid #397453; display: flex; gap: 1rem; justify-content: space-between; padding: .8rem max(1rem, calc((100vw - 72rem) / 2)); }.timing-nav-brand { color: #a9ef81; font-weight: 800; text-decoration: none; }.timing-nav span { color: #bfe5c9; font-size: .82rem; font-weight: 700; }
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; background: linear-gradient(rgb(4 25 15 / .87), rgb(4 25 15 / .94)), url('assets/disc-golf-background.png') center / cover fixed, #071d13; }
 .app-shell { width: min(100%, 38rem); min-height: 100svh; margin: auto; padding: 3rem 1.25rem 2rem; }

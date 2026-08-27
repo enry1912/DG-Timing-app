@@ -13,6 +13,6 @@ Do not enter secrets into source files or chat.
    - `npx wrangler secret put GOOGLE_CLIENT_ID`
    - `npx wrangler secret put GOOGLE_CLIENT_SECRET`
    - `npx wrangler secret put RESEND_API_KEY`
-9. Deploy the Worker and static assets with `npx wrangler deploy` from this project folder.
+9. Build local UI assets, then deploy with `npm run build && npx wrangler deploy` from this project folder. In Cloudflare Builds, set the build command to `npm run build` and retain `npx wrangler deploy` as the deploy command.
 
 Before inviting users, verify registration, email verification, password reset, Google sign-in, profile ownership, profile deletion, and account deletion on the deployed HTTPS domain.

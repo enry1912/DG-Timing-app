@@ -1,17 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#183d2b" />
     <meta name="description" content="Practice disc golf backhand footwork timing." />
+    <base href="/" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="icons/icon.svg" />
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="vendor/bootstrap-icons/bootstrap-icons.css" />
     <link rel="stylesheet" href="styles.css" />
     <title>Disc Golf Timing</title>
   </head>
   <body>
+    <nav class="timing-nav"><a href="/" class="timing-nav-brand"><i class="bi bi-disc-fill"></i> Disc Golf Lab</a><span>Disc Golf Timing</span></nav>
     <main class="app-shell">
       <header>
         <p class="eyebrow">DISC GOLF FOOTWORK</p>
@@ -19,8 +23,8 @@
         <p class="subtitle">Train the rhythm of a pro backhand run-up.</p>
         <pre id="debug-log" class="debug-log" hidden></pre>
         <div class="actions workout-actions">
-          <button class="primary" id="start-button">Start workout</button>
-          <button class="stop" id="stop-button" disabled>Stop</button>
+          <button class="btn btn-success" id="start-button">Start workout</button>
+          <button class="btn btn-outline-light" id="stop-button" disabled>Stop</button>
         </div>
         <div class="account-bar" id="account-bar"><button class="secondary" id="open-auth" type="button">Sign in</button></div>
       </header>
@@ -82,7 +86,7 @@
       <p class="form-help">Pause or step through the clip, then record when each step starts and ends.</p>
       <table class="step-table"><tbody id="step-table-body"></tbody></table>
       <p class="form-help" id="recorded-steps">No footfalls recorded.</p><textarea id="export-text" class="export-text" readonly hidden aria-label="Copyable CSV export"></textarea>
-      <div class="actions"><button class="secondary" id="test-editor" type="button">Test video + sound</button><button class="primary" id="save-editor" type="button">Save timings</button><button class="secondary" id="export-editor" type="button">Export TXT</button><button class="secondary" id="close-editor" type="button">Close</button></div>
+      <div class="actions"><button class="btn btn-outline-info" id="test-editor" type="button">Test video + sound</button><button class="btn btn-success" id="save-editor" type="button">Save timings</button><button class="btn btn-outline-light" id="export-editor" type="button">Export CSV</button><button class="btn btn-outline-light" id="close-editor" type="button">Close</button></div>
     </dialog>
     <dialog id="workout-video" class="workout-video"><button id="close-workout-video" type="button">Close video</button><video id="workout-video-player" muted playsinline controls></video><div id="workout-step-bar" class="workout-step-bar" aria-label="Step timing progress"></div></dialog>
     <dialog id="player-required" class="player-required"><p class="eyebrow">SELECT A PLAYER</p><h2>Choose a timing profile first</h2><p class="form-help">Click a player name, then start the workout.</p><button id="close-player-required" class="primary" type="button">Got it</button></dialog>
@@ -93,6 +97,7 @@
       <a id="google-sign-in" class="google-sign-in" href="/api/auth/google">Continue with Google</a>
       <div class="auth-links"><button id="toggle-auth-mode" class="text-button" type="button">Create an account</button><button id="forgot-password" class="text-button" type="button">Forgot password?</button></div>
     </dialog>
+    <script defer src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="app.js"></script>
   </body>
 </html>

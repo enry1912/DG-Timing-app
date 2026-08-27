@@ -1,7 +1,7 @@
 {
-  "name": "DG Timing — Disc Golf Footwork Trainer",
-  "short_name": "Disc Golf Timing",
-  "start_url": "./",
+  "name": "Disc Golf Lab",
+  "short_name": "DG Lab",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#071b13",
   "theme_color": "#183d2b",

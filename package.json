@@ -1,0 +1,14 @@
+{
+  "name": "disc-golf-lab",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node scripts/build-assets.mjs",
+    "check": "node --check worker.js && node --check app.js && node --check portal.js"
+  },
+  "dependencies": {
+    "bootstrap": "5.3.8",
+    "bootstrap-icons": "1.13.1"
+  }
+}
