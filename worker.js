@@ -30,9 +30,7 @@ export default {
     if (url.pathname === '/' || url.pathname === '/portal.html') {
       return env.ASSETS.fetch(new Request(new URL('/portal.html', request.url), request));
     }
-    if (url.pathname === '/apps/timing' || url.pathname === '/apps/timing/') {
-      return env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
-    }
+    if (url.pathname === '/apps/timing') return Response.redirect(new URL('/apps/timing/', request.url), 302);
     const route = routes[`${request.method} ${url.pathname}`];
     if (route) return route({ request, env, params: {} });
     const profileMatch = url.pathname.match(/^\/api\/profiles\/([\w-]+)$/);
